@@ -1,5 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
+
 
 # Create your models here.
 
@@ -23,11 +25,13 @@ class Subcategory(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse("subcategory_articles", kwargs={"slug": self.slug})
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
-
 
     class Meta:
         verbose_name = "Подкатегория"
@@ -56,6 +60,9 @@ class Product(models.Model):
     subcategory = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, verbose_name="Подкатегория", null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, verbose_name="Категория", null=True)
 
+    def get_absolute_url(self):
+        return reverse("product_detail", kwargs={"slug": self.slug})
+
     def get_class_by_type(self):
         TYPES_CLASSES = {
             "new": "info",
@@ -79,18 +86,18 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Продукт")
 
 # CategoryModel
-    # title
+# title
 # SubCategoryModel
-    # title
-    # category_id
+# title
+# category_id
 # Product
-    # title
-    # description
-    # price
-    # quantity
-    # views
-    # product_type (new, sale, sold)
-    # category
+# title
+# description
+# price
+# quantity
+# views
+# product_type (new, sale, sold)
+# category
 # ProductImage
-    # photo
-    # product_id
+# photo
+# product_id
